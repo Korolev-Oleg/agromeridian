@@ -26,7 +26,7 @@ Make and setup SECRET.py
 # SECURITY WARNING: keep this file secret!
 SECRET_KEY = ''
 
-# Email settings
+# Smtp settings
 EMAIL_HOST = ''
 EMAIL_PORT = ''
 EMAIL_HOST_USER = ''
