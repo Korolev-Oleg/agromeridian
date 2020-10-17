@@ -1,0 +1,59 @@
+{% extends 'templates/base_generic.html' %}
+{% load static %}
+{% block extra_styles %}
+    <link rel="stylesheet" href="{% static 'css/user.css' %}">
+{% endblock %}
+{% block content %}
+    <div class="header">
+        <h1>Заявки на пропуска</h1>
+        <div class="user-panel">
+            <p>Добро пожаловать {{ user.first_name }}</p>
+            <a href="{% url 'logout' %}">Выйти</a>
+        </div>
+    </div>
+    {% if applications_list %}
+        <a href="{% url 'passes-new' %}" role="button" class="btn btn-outline-success">Подать заявку</a>
+    {% endif %}
+    <br>
+    <br>
+
+    {% if message %}
+        <div class="alert alert-success" role="alert">
+            <b>{{ message }}</b>
+        </div>
+    {% endif %}
+
+    {% if applications_list %}
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">Собственник</th>
+                <th scope="col">Номер машины</th>
+                <th scope="col">Зона</th>
+                <th scope="col">Дата подачи на разовый</th>
+                <th scope="col">Дата подачи на годовой</th>
+                <th scope="col">Дата выдачи годового</th>
+            </tr>
+            </thead>
+            {% for application in applications_list %}
+                <tr class="table-row {% if application.is_passed %}row-success{% elif application.comment_admin %}row-warning{% endif %}"
+                    onclick="window.location.href='{{ application.get_absolute_url }}'">
+                    <th>{{ application.owner }}</th>
+                    <th>{{ application.car_number }}</th>
+                    <th>{{ application.get_zone }}</th>
+                    <th>{% if  application.date_push_onetime %}{{ application.date_push_onetime }}{% else %}
+                        - {% endif %}</th>
+                    <th>{% if application.date_push_year %}{{ application.date_push_year }}{% else %} - {% endif %}</th>
+                    <th>{% if application.date_get_year %}{{ application.date_get_year }}{% else %} - {% endif %}</th>
+                </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <div class="welcome">
+            <div class="vertical-align">
+                <h3>Заявки отсутствуют </h3>
+                <a href="{% url 'passes-new' %}" role="button" class="btn btn-outline-success">Подать новую заявку</a>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}

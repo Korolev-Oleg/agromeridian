@@ -1,0 +1,39 @@
+{% extends 'templates/base_generic.html' %}
+{% load static %}
+{% block extra_styles %}
+    <link rel="stylesheet" href="{% static 'css/form.css' %}">
+{% endblock %}
+{% block content %}
+    {% if error %}
+        <div class="alert alert-danger" role="alert">
+            {{ error }}
+        </div>
+    {% endif %}
+    <div class="form-container">
+        <h1>Регистрация в системе подачи заявок</h1>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                {{ form.username.label_tag }}
+                <input class="form-control" type="{{ form.username.html_name }}" name="{{ form.username.html_name }}" required
+                       id="{{ form.username.id_for_label }}">
+            </div>
+            <div class="form-group">
+                {{ form.email.label_tag }}
+                <input class="form-control" type="{{ form.email.html_name }}" name="{{ form.email.html_name }}" required
+                       id="{{ form.email.id_for_label }}" aria-describedby="emailHelp" placeholder="Enter email"
+                       value="{{ form.email.value }}" maxlength="{{ form.email.max_length }}">
+
+                <small id="emailHelp" class="form-text text-muted">На указанную почту будут отправлены данные для
+                    входа</small>
+            </div>
+            <div class="form-group">
+                {{ form.password.label_tag }}
+                <input class="form-control" type="{{ form.password.html_name }}" name="{{ form.password.html_name }}"
+                       required id="{{ form.password.id_for_label }}" placeholder="Пароль">
+                <input type="hidden" name="token" value="{{ token }}">
+            </div>
+            <button type="submit" class="btn btn-primary">Отправить</button>
+        </form>
+    </div>
+{% endblock %}

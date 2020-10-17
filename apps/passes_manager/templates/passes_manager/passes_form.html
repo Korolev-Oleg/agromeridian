@@ -1,0 +1,134 @@
+{% extends 'templates/base_generic.html' %}
+{% load static %}
+{% load myfilters %}
+
+{% block extra_styles %}
+    <link rel="stylesheet" href="{% static 'css/passes.css' %}">
+{% endblock %}
+{% block content %}
+    <h1>{% if is_new %}Новая заявка{% else %}Редактирование заявки{% endif %}</h1>
+    <a href="{% url 'cabinet' %}" role="button" class="btn btn-outline-warning">Все заявки</a>
+    <br>
+    <br>
+
+    {% if not is_new %}
+        {% if admin_comment %}
+            <div class="alert alert-warning" role="alert">
+                <b>Комментарий администратора:</b><br>{{ admin_comment }}
+            </div>
+        {% elif not urls_to_files.is_passed %}
+            <div class="alert alert-secondary" role="alert">
+                <b>Заявка еще не проверялась!</b>
+            </div>
+        {% elif urls_to_files.is_passed %}
+            <div class="alert alert-success" role="alert">
+                <b>Пропуск выдан!</b>
+            </div>
+        {% endif %}
+    {% endif %}
+
+    <form action="" method="post" class="was-validated" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        {% if urls_to_files %}
+        <style type="text/css">.custom-file {height: auto;}</style>
+        {% endif %}
+        <div>
+            <div class="fields-group">
+                <div class="form-group">
+                    {{ form.owner.label_tag }}
+                    {{ form.owner|addclass:'form-control' }}
+                    {{ form.owner.errors }}
+
+                </div>
+                <div class="form-group">
+                    {{ form.car_number.label_tag }}
+                    {{ form.car_number|addclass:'form-control' }}
+                    {{ form.car_number.errors }}
+                </div>
+                <div class="form-group">
+                    {{ form.zone.label_tag }}
+                    {{ form.zone|addclass:'form-control' }}
+                    {{ form.zone.errors }}
+                </div>
+            </div>
+            <div class="files-group">
+                <div class="custom-file">
+                    {{ form.sts|addclass:'custom-file-input' }}
+                    <label class="custom-file-label" for="validatedCustomFile">{{ form.sts.label }}</label>
+                    <div class="invalid-feedback">{{ form.sts.error_messages }}</div>
+                    {% if urls_to_files %}<a href="{{ urls_to_files.sts }}" target="_blank">открыть</a>{% endif %}
+                </div>
+                <div class="custom-file">
+                    <div class="invalid-feedback">{{ form.pts.errors }}</div>
+                    {{ form.pts|addclass:'custom-file-input' }}
+                    <label class="custom-file-label" for="validatedCustomFile">{{ form.pts.label }}</label>
+                    {% if urls_to_files %}<a href="{{ urls_to_files.pts }}" target="_blank">открыть</a>{% endif %}
+                </div>
+                <div class="custom-file">
+                    <div class="invalid-feedback">{{ form.dk.errors }}</div>
+                    {{ form.dk|addclass:'custom-file-input' }}
+                    <label class="custom-file-label" for="validatedCustomFile">{{ form.dk.label }}</label>
+                    {% if urls_to_files %}<a href="{{ urls_to_files.dk }}" target="_blank">открыть</a>{% endif %}
+                </div>
+                <div class="custom-file">
+                    <div class="invalid-feedback">{{ form.vu.errors }}</div>
+                    {{ form.vu|addclass:'custom-file-input' }}
+                    <label class="custom-file-label" for="validatedCustomFile">{{ form.vu.label }}</label>
+                    {% if urls_to_files %}<a href="{{ urls_to_files.vu }}" target="_blank">открыть</a>{% endif %}
+                </div>
+                <div class="custom-file">
+                    <div class="invalid-feedback">{{ form.owner_passport.errors }}</div>
+                    {{ form.owner_passport|addclass:'custom-file-input' }}
+                    <label class="custom-file-label"
+                           for="{{ form.owner_passport.id_for_label }}">{{ form.owner.label }}</label>
+                    {% if urls_to_files %}<a href="{{ urls_to_files.owner_passport }}" target="_blank">открыть</a>{% endif %}
+                </div>
+                <div class="custom-file">
+                    <div class="invalid-feedback">{{ form.lsnnl.errors }}</div>
+                    {{ form.lsnnl|addclass:'custom-file-input' }}
+                    <label class="custom-file-label" for="{{ form.lsnnl.id_for_label }}">{{ form.lsnnl.label }}</label>
+                    {% if urls_to_files %}<a href="{{ urls_to_files.lsnnl }}" target="_blank">открыть</a>{% endif %}
+                </div>
+                <div class="custom-file">
+                    <div class="invalid-feedback">{{ form.requisites.errors }}</div>
+                    {{ form.requisites|addclass:'custom-file-input' }}
+                    <label class="custom-file-label"
+                           for="{{ form.requisites.id_for_label }}">{{ form.requisites.label }}</label>
+                    {% if urls_to_files %}<a href="{{ urls_to_files.requisites }}" target="_blank">открыть</a>{% endif %}
+
+                </div>
+            </div>
+            <div class="form-group comment">
+                {{ form.comment_from_user.errors }}
+                {{ form.comment_from_user.label_tag }}
+                {{ form.comment_from_user|addclass:'form-control' }}
+            </div>
+        </div>
+        <button type="submit" class="btn btn-outline-success">Отправить</button>
+    </form>
+    <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"
+            integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"
+            integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb"
+            crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"
+            integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"
+            crossorigin="anonymous"></script>
+
+    <script type="text/javascript">
+        $('.custom-file input').change(function (e) {
+            var files = [];
+            for (var i = 0; i < $(this)[0].files.length; i++) {
+                let filename = $(this)[0].files[i].name
+                $(this).parent().children('a')[0].innerHTML = ''
+                if (filename.length > 20) {
+                    filename = filename.slice(0, 15) + '...'
+                }
+                files.push(filename);
+            }
+            $(this).next('.custom-file-label').html(files.join(', '));
+        });
+    </script>
+{% endblock %}

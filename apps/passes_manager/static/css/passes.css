@@ -1,0 +1,28 @@
+.custom-file-input:lang(en)~.custom-file-label::after {
+    content: "Выбрать";
+}
+
+.was-validated{
+    padding-top: 35px;
+    width: 990px;
+    margin: auto;
+}
+
+.fields-group{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 14px;
+}
+.files-group{
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-gap: 14px;
+}
+#id_comment_from_user{
+    height: 150px;
+}
+.comment {
+    padding-top: 35px;
+    grid-column: 3/3;
+    grid-row: 1/4;
+}
