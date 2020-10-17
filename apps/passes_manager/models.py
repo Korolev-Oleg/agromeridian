@@ -22,7 +22,7 @@ class Applications(models.Model):
 
     #
     owner = models.CharField(max_length=500, verbose_name='Собственник')
-    car_number = models.CharField(max_length=8, verbose_name='Номер машины')
+    car_number = models.CharField(max_length=12, verbose_name='Номер машины')
     zone = models.CharField(max_length=1, choices=Zones.chooses, verbose_name='Зона')
     client = models.ForeignKey('Clients', on_delete=models.CASCADE, verbose_name='Клиент')
 
@@ -72,7 +72,7 @@ class Applications(models.Model):
     class Meta:
         verbose_name = 'Заявка'
         verbose_name_plural = 'Заявки'
-        ordering = ['-pk']
+        ordering = ['-comment_admin', '-is_passed', '-pk']
 
 
 class Clients(models.Model):
