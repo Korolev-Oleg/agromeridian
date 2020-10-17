@@ -1,0 +1,59 @@
+{% extends 'templates/base_generic.html' %}
+{% load static %}
+{% block extra_styles %}
+    <link rel="stylesheet" href="{% static 'css/form.css' %}">
+{% endblock %}
+
+{% block content %}
+    {% if form.errors %}
+    <div class="alert alert-danger" role="alert">
+        {{ form.errors }}
+    </div>
+    {% endif %}
+
+
+    {% if next %}
+        <div class="alert alert-danger" role="alert">
+        {% if user.is_authenticated %}
+            <p>Your account doesn't have access to this page. To proceed,
+                please login with an account that has access.</p>
+        {% else %}
+                <p>Please login to see this page.</p>
+        {% endif %}
+            </div>
+    {% endif %}
+
+    <div class="form-container">
+    <h1>Вход</h1>
+        <form method="post" action="{% url 'login' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="{{ form.username.id_for_label }}">Почта</label>
+                </label><input class="form-control" type="{{ form.username.html_name }}" name="{{ form.username.html_name }}" required
+                                                                             id="{{ form.username.id_for_label }}">
+            </div>
+            <div class="form-group">
+                {{ form.password.label_tag }}
+                <input class="form-control" type="{{ form.password.html_name }}" name="{{ form.password.html_name }}"
+                       required id="{{ form.password.id_for_label }}" placeholder="Пароль">
+            </div>
+            <button type="submit" value="login" class="btn btn-primary">Вход</button>
+            <p><a href="{% url 'password_reset' %}">Восстановление пароля</a></p>
+
+            <input type="hidden" name="next" value="{{ next }}">
+        </form>
+    </div>
+
+    <script>
+    window.onload = function () {
+        let params = new URLSearchParams(window.location.search)
+        let email = params.get('email')
+        if (email){
+            let usernameInput = document.getElementById('{{ form.username.id_for_label }}')
+            usernameInput.value = email
+        }
+    }
+    </script>
+    {# Assumes you setup the password_reset view in your URLconf #}
+
+{% endblock %}
