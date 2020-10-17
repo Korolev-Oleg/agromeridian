@@ -13,25 +13,38 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 import os
 from pathlib import Path
 
+# SECURITY WARNING: keep SECRET.py file secret!
+from loguru import logger
+
+from SECRET import *
+
+# For the get url with token in passes_manager.clients_change_form template
+EXTERNAL_HOST = "localhost:8000"
+EXTERNAL_TOKEN_VALIDATION_URL = f'http://{EXTERNAL_HOST}/token_validation'
+EXTERNAL_LOGIN_URL = f'http://{EXTERNAL_HOST}/login_redirect'
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-TEMPLATES_DIR = Path.joinpath(Path(__file__).resolve().parent, 'templates')
 
-print(TEMPLATES_DIR)
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '&d88&&&p29@irhajj)-_ubd1&q&nw&fgnekl(-68p%kg(y*!er'
+# Logging
+logger.add(
+    BASE_DIR / 'src/debug.log',
+    format='{time} {level} {message}',
+    level='DEBUG',
+    rotation='10 mb',
+    retention="1 month",
+    compression='zip',
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# Redirect after login in /admin
+ADMIN_LOGIN_REDIRECT_URL = '/admin/passes_manager/applications/'
+
+LOGIN_REDIRECT_URL = '/login_redirect/'
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -39,7 +52,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'apps.forms.apps.LoginConfig',
+    'django_cleanup',
+    'apps.passes_manager.apps.PassesManagerConfig',
 ]
 
 MIDDLEWARE = [
@@ -50,6 +64,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.gzip.GZipMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -57,7 +72,7 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [TEMPLATES_DIR],
+        'DIRS': [BASE_DIR / 'config/templates', BASE_DIR / 'apps'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -117,3 +132,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+print(STATIC_ROOT)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
