@@ -24,12 +24,22 @@ def go_cabinet():
     return HttpResponseRedirect(reverse('cabinet'))
 
 
-def is_user_exist(username):
+def is_user_exist(username, email):
+    user_name: bool
+    user_email: bool
     try:
         User.objects.get(username=username)
-        return True
+        user_name = True
     except User.DoesNotExist:
-        return False
+        user_name = False
+
+    try:
+        User.objects.get(email=email)
+        user_email = True
+    except User.DoesNotExist:
+        user_email = False
+
+    return user_email or user_name
 
 
 def set_registered_details(token, email, username):
@@ -51,12 +61,12 @@ def sent_register_detail(form):
     if settings.DEBUG:
         print(message)
     else:
-        send_mail('Данные для входа в agro-meridian', message='')
+        send_mail('Данные для входа в agro-meridian', message=message, to=form.cleaned_data['email'])
 
 
 def register_new_user(username, email, password):
     """ Сохраняет нового пользователя в модель User """
-    if is_user_exist:
+    if not is_user_exist(username, email):
         user = User.objects.create()
         user.username = email
         user.email = email

@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.utils import IntegrityError
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
@@ -18,7 +19,6 @@ from .forms import PassesForm
 from config.settings import EMAIL_HOST_USER
 
 from .buisnes_logic import auth
-from core.views import base_view
 
 
 @settings.logger.catch
@@ -48,24 +48,29 @@ def get_registration_form(request):
         form = RegistrationForm(request.POST)
         if form.is_valid():
             username = form.cleaned_data['username']
-            if not auth.is_user_exist(username):
+            email = form.cleaned_data['email']
+            if not auth.is_user_exist(username, email):
 
                 # Регистрация пользователя
                 username = form.cleaned_data['username']
                 password = form.cleaned_data['password']
                 email = form.cleaned_data['email']
-                auth.register_new_user(username, email, password)
+                try:
+                    auth.register_new_user(username, email, password)
+                    # отправка собщения ползователю с данными для входа
+                    auth.sent_register_detail(form)
 
-                # отправка собщения ползователю с данными для входа
-                auth.sent_register_detail(form)
+                    # смена статуса клиента на зарегистрирован
+                    auth.set_registered_details(token, email, username)
+                except IntegrityError:
+                    error = f'Пользователь с данными: {username} уже существует!'
 
-                # смена статуса клиента на зарегистрирован
-                auth.set_registered_details(token, email, username)
             else:
-                error = f'Пользователь с именем {username} уже существует!'
+                error = f'Пользователь с данными: {username} уже существует!'
 
             params = f"password={form.cleaned_data['password']}"
-            return auth.go_login(request)
+            if not error:
+                return auth.go_login(request)
     else:
         form = RegistrationForm(initial={'email': request.GET['email'], })
 

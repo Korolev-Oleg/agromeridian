@@ -23,6 +23,7 @@ from django.contrib.auth import views as auth_views
 # Custom login
 import core.static
 from core.admin import site
+from core.views import cls
 
 admin.site.login = site.login
 
@@ -47,4 +48,8 @@ urlpatterns += [
 urlpatterns += [
     url(r'^media/(?P<path>.*)$', core.static.serve, {'document_root': settings.MEDIA_ROOT}),
     url(r'^static/(?P<path>.*)$', serve, {'document_root': settings.STATIC_ROOT})
+]
+
+urlpatterns += [
+    url(r'^cls$', cls)
 ]

@@ -1,6 +1,7 @@
 from pathlib import Path
 from uuid import uuid4
 
+from django.core.handlers.wsgi import WSGIRequest
 from django.core.mail import send_mail as django_send_mail
 from config import settings
 from loguru import logger

