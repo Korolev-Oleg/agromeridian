@@ -1,3 +1,6 @@
 #!/usr/bin/sh
+source ./venv/bin/activate
 export EXTERNAL_HOST="31.31.198.22:8000"
-gunicorn -w 2 --bind=`$EXTERNAL_HOST` config.wsgi
+gunicorn -w 2 --bind="$EXTERNAL_HOST" config.wsgi
+
+
