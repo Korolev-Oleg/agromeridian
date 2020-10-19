@@ -82,21 +82,27 @@
                     {{ form.owner_passport|addclass:'custom-file-input' }}
                     <label class="custom-file-label"
                            for="{{ form.owner_passport.id_for_label }}">{{ form.owner.label }}</label>
-                    {% if urls_to_files %}<a href="{{ urls_to_files.owner_passport }}" target="_blank">открыть</a>{% endif %}
+                    {% if urls_to_files.owner_passport %}<a href="{{ urls_to_files.owner_passport }}" target="_blank">открыть</a>{% endif %}
                 </div>
                 <div class="custom-file">
                     <div class="invalid-feedback">{{ form.lsnnl.errors }}</div>
                     {{ form.lsnnl|addclass:'custom-file-input' }}
                     <label class="custom-file-label" for="{{ form.lsnnl.id_for_label }}">{{ form.lsnnl.label }}</label>
-                    {% if urls_to_files %}<a href="{{ urls_to_files.lsnnl }}" target="_blank">открыть</a>{% endif %}
+                    {% if urls_to_files.lsnnl %}<a href="{{ urls_to_files.lsnnl }}" target="_blank">открыть</a>{% endif %}
                 </div>
                 <div class="custom-file">
                     <div class="invalid-feedback">{{ form.requisites.errors }}</div>
                     {{ form.requisites|addclass:'custom-file-input' }}
                     <label class="custom-file-label"
                            for="{{ form.requisites.id_for_label }}">{{ form.requisites.label }}</label>
-                    {% if urls_to_files %}<a href="{{ urls_to_files.requisites }}" target="_blank">открыть</a>{% endif %}
-
+                    {% if urls_to_files.requisites %}<a href="{{ urls_to_files.requisites }}" target="_blank">открыть</a>{% endif %}
+                </div>
+                <div class="custom-file">
+                    <div class="invalid-feedback">{{ form.additional_file.errors }}</div>
+                    {{ form.additional_file|addclass:'custom-file-input' }}
+                    <label class="custom-file-label"
+                           for="{{ form.additional_file.id_for_label }}">{{ form.additional_file.label }}</label>
+                    {% if urls_to_files.additional_file %}<a href="/media/{{ urls_to_files.additional_file }}" target="_blank">открыть</a>{% endif %}
                 </div>
             </div>
             <div class="form-group comment">

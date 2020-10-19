@@ -34,6 +34,7 @@ def HARD_SAVE_FORM(request: WSGIRequest, model):
     owner_passport_file = request.FILES.get('owner_passport')
     lsnnl_file = request.FILES.get('lsnnl')
     requisites_file = request.FILES.get('requisites')
+    additional_file = request.FILES.get('additional_file')
 
     # FIELDS SET
     owner_field = request.POST.get('owner')
@@ -61,6 +62,8 @@ def HARD_SAVE_FORM(request: WSGIRequest, model):
         model.lsnnl = lsnnl_file
     if requisites_file:
         model.requisites = requisites_file
+    if additional_file:
+        model.additional_file = additional_file
 
     # SAVE FIELDS
     if owner_field:
@@ -96,6 +99,7 @@ def save_passes_form(model, form, user_pk):
     model.lsnnl = form.cleaned_data['lsnnl']
     model.requisites = form.cleaned_data['requisites']
     model.comment_from_user = form.cleaned_data['comment_from_user']
+    model.additional_file = form.cleaned_data['additional_file']
     model.save()
 
 
@@ -144,8 +148,10 @@ def get_files_urls(model):
             owner_passport = model.owner_passport.url
         if model.lsnnl:
             lsnnl = model.lsnnl.url
-        if model.sts:
-            requisites = model.sts.url
+        if model.requisites:
+            requisites = model.requisites.url
+        if model.additional_file:
+            additional_file = model.additional_file
         if model.is_passed:
             is_passed = model.is_passed
 

@@ -44,11 +44,16 @@ class Applications(models.Model):
 
     lsnnl = models.FileField(
         upload_to=get_unique_filename, verbose_name='Лизинг',
-        help_text='Не обязательное поле', blank=True, null=True)
-
+        help_text='Не обязательное поле', blank=True, null=True
+    )
     requisites = models.FileField(
         upload_to=get_unique_filename, verbose_name='Реквизиты',
-        help_text='Не обязательное поле', blank=True, null=True)
+        help_text='Не обязательное поле', blank=True, null=True
+    )
+    additional_file = models.FileField(
+        upload_to=get_unique_filename, verbose_name='Дополнительный файл',
+        help_text='Не обязательное поле', blank=True, null=True
+    )
 
     comment_from_user = models.TextField(verbose_name='Комментарий от пользователя', blank=True, null=True)
 

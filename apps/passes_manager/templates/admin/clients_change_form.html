@@ -7,27 +7,31 @@
 {% endblock %}
 {% block submit_buttons_bottom %}
     {{ block.super }}
-    <div class="submit-row">
-        <input type="submit" value="Make Unique" name="_make-unique">
-    </div>
     <script>
         window.onload = function () {
             let id_token = document.getElementById('id_token');
             let email = document.getElementById('id_email').value
-            let url = `{{ token_validation_url }}?token=${id_token.value}&email=${email}`
             let copy_button = document.createElement('input')
+            let url = `{{ token_validation_url }}?token=${id_token.value}&email=${email}`
+
             copy_button.type = 'button'
             copy_button.value = 'Скопировать ссылку'
             copy_button.onclick = function (){
+                id_token = document.getElementById('id_token');
+                email = document.getElementById('id_email').value
+                url = `{{ token_validation_url }}?token=${id_token.value}&email=${email}`
+
                 navigator.clipboard.writeText(url)
-                  .then(() => {
-                      console.log(id_token)
-                      id_token.parentNode.lastChild
-                  })
+                    .then(() => {
+                        console.log(id_token)
+                        id_token.parentNode.lastChild
+                    })
             }
             id_token.parentNode.appendChild(copy_button)
             id_token.parentNode.style.display = 'flex'
-            console.log(url)
+
+            {# Change submit button text #}
+            document.getElementsByClassName('default')._save.value = 'Отправить'
         }
     </script>
 {% endblock %}

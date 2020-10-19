@@ -1,1 +1,10 @@
 {% extends 'admin/change_form.html' %}
+{% block submit_buttons_bottom %}
+    {{ block.super }}
+    <script>
+        window.onload = function () {
+            {# Change submit button text #}
+            document.getElementsByClassName('default')._save.value = 'Отправить'
+        }
+    </script>
+{% endblock %}

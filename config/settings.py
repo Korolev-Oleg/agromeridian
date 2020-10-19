@@ -18,11 +18,6 @@ from loguru import logger
 
 from SECRET import *
 
-# For the get url with token in passes_manager.clients_change_form template
-EXTERNAL_HOST = "localhost:8000"
-EXTERNAL_TOKEN_VALIDATION_URL = f'http://{EXTERNAL_HOST}/token_validation'
-EXTERNAL_LOGIN_URL = f'http://{EXTERNAL_HOST}/login_redirect'
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 

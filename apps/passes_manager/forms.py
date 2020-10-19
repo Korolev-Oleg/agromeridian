@@ -36,14 +36,22 @@ class PassesForm(forms.Form):
     dk = forms.FileField(label='ДК', )
     vu = forms.FileField(label='ВУ', )
     owner_passport = forms.FileField(
-        label='Паспорт собственника ТС', help_text='Не обязательное поле', required=False
+        label='Паспорт собственника ТС',
+        help_text='Не обязательное поле',
+        required=False
     )
     lsnnl = forms.FileField(
-        label='Лизинг', help_text='Не обязательное поле', required=False)
-
+        label='Лизинг', help_text='Не обязательное поле',
+        required=False
+    )
     requisites = forms.FileField(
-        label='Реквизиты', help_text='Не обязательное поле', required=False)
-
+        label='Реквизиты', help_text='Не обязательное поле',
+        required=False
+    )
+    additional_file = forms.FileField(
+        label='Дополнительно', help_text='Не обязательное поле',
+        required=False
+    )
     comment_from_user = forms.CharField(widget=forms.Textarea, label='Комментарий', required=False)
 
     def __init__(self, *args, **kwargs):
