@@ -13,6 +13,9 @@ table tbody tr th a {
     background-color: #ffdd78;
     color: #856404;
 }
+.row-not-complete {
+    background-color: #cecece;
+}
 
 .table-row {
     display: table-row;
@@ -44,4 +47,10 @@ table tbody tr th a {
     line-height: normal;
     display: inline-block;
     vertical-align: middle;
+}
+
+.square {
+    width: 10px;
+    height: 10px;
+    margin: 7px;
 }

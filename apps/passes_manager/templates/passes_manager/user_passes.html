@@ -24,6 +24,13 @@
     {% endif %}
 
     {% if applications_list %}
+        <br>
+        <div class="row">
+            <div class="row-not-complete square"></div> - не заполнено
+            <div class="row-success square"></div> - пропуск выдан
+            <div class="row-warning square"></div> -комментарий от администратора
+        </div>
+        <br>
         <table class="table">
             <thead>
             <tr>
@@ -36,7 +43,7 @@
             </tr>
             </thead>
             {% for application in applications_list %}
-                <tr class="table-row {% if application.is_passed %}row-success{% elif application.comment_admin %}row-warning{% endif %}"
+                <tr class="table-row {% if application.is_passed %}row-success{% elif application.comment_admin %}row-warning{% elif not application.is_complete %}row-not-complete{% endif %}"
                     onclick="window.location.href='{{ application.get_absolute_url }}'">
                     <th>{{ application.owner }}</th>
                     <th>{{ application.car_number }}</th>

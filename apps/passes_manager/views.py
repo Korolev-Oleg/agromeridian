@@ -9,7 +9,7 @@ from django.views import generic
 from config import settings
 from .buisnes_logic.form_tools import (
     save_passes_form, get_passes_initial,
-    get_files_urls, save_files_session,
+    get_files_urls,
     HARD_SAVE_FORM)
 
 from .models import Clients

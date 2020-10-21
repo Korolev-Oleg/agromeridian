@@ -34,10 +34,10 @@ class Applications(models.Model):
     is_passed = models.BooleanField(default=False, verbose_name='Пропуск выдан')
 
     # Зявка пользователя
-    sts = models.FileField(upload_to=get_unique_filename, verbose_name='СТС')
-    pts = models.FileField(upload_to=get_unique_filename, verbose_name='ПТС')
-    dk = models.FileField(upload_to=get_unique_filename, verbose_name='ДК')
-    vu = models.FileField(upload_to=get_unique_filename, verbose_name='ВУ')
+    sts = models.FileField(upload_to=get_unique_filename, verbose_name='СТС', blank=True, null=True)
+    pts = models.FileField(upload_to=get_unique_filename, verbose_name='ПТС', blank=True, null=True)
+    dk = models.FileField(upload_to=get_unique_filename, verbose_name='ДК', blank=True, null=True)
+    vu = models.FileField(upload_to=get_unique_filename, verbose_name='ВУ', blank=True, null=True)
     owner_passport = models.FileField(
         upload_to=get_unique_filename, verbose_name='Паспорт собственника ТС',
         help_text='Не обязательное поле', blank=True, null=True)
@@ -56,6 +56,12 @@ class Applications(models.Model):
     )
 
     comment_from_user = models.TextField(verbose_name='Комментарий от пользователя', blank=True, null=True)
+
+    def is_complete(self):
+        if self.sts and self.pts and self.dk and self.vu:
+            return True
+    is_complete.boolean = True
+    is_complete.short_description = 'Заполнено'
 
     def __str__(self):
         return self.owner

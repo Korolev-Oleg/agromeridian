@@ -31,10 +31,10 @@ class PassesForm(forms.Form):
     owner = forms.CharField(max_length=500, label='Собственник')
     car_number = forms.CharField(max_length=12, min_length=8, label='Номер машины')
     zone = forms.ChoiceField(choices=Zones.chooses, label='Зона')
-    sts = forms.FileField(label='СТС', )
-    pts = forms.FileField(label='ПТС', )
-    dk = forms.FileField(label='ДК', )
-    vu = forms.FileField(label='ВУ', )
+    sts = forms.FileField(label='СТС', required=False)
+    pts = forms.FileField(label='ПТС', required=False)
+    dk = forms.FileField(label='ДК', required=False)
+    vu = forms.FileField(label='ВУ', required=False)
     owner_passport = forms.FileField(
         label='Паспорт собственника ТС',
         help_text='Не обязательное поле',

@@ -26,3 +26,16 @@
     grid-column: 3/3;
     grid-row: 1/4;
 }
+
+.red {
+    border-color: #dc3545!important;
+}
+
+.green {
+    border-color: #28a745!important;
+}
+
+.comment-p {
+    color: #777777;
+    font-size: 13px;
+}

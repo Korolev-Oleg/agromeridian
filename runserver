@@ -1,5 +1,6 @@
 #!/usr/bin/sh
 source ./venv/bin/activate
+python manage.py collectstatic --noinput
 export EXTERNAL_HOST="31.31.198.22:8000"
 exec gunicorn -w 2 --bind="$EXTERNAL_HOST" config.wsgi
 

@@ -11,7 +11,7 @@ class ApplicationsAdmin(admin.ModelAdmin):
     change_list_template = 'admin/custom_change_list.html'
     change_form_template = 'admin/custom_change_form.html'
     search_fields = ('owner', 'car_number')
-    list_display = ('owner', 'car_number', 'zone', 'is_passed')
+    list_display = ('owner', 'car_number', 'zone', 'is_complete', 'is_passed', )
     list_filter = ('is_passed', 'zone', 'client', 'date_get_year')
 
     fieldsets = (

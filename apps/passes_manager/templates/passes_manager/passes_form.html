@@ -54,28 +54,28 @@
             </div>
             <div class="files-group">
                 <div class="custom-file">
-                    {{ form.sts|addclass:'custom-file-input' }}
-                    <label class="custom-file-label" for="validatedCustomFile">{{ form.sts.label }}</label>
                     <div class="invalid-feedback">{{ form.sts.error_messages }}</div>
-                    {% if urls_to_files %}<a href="{{ urls_to_files.sts }}" target="_blank">открыть</a>{% endif %}
+                    {{ form.sts|addclass:'custom-file-input' }}
+                    <label class="custom-file-label{% if not urls_to_files.sts %} red{% endif %}" for="validatedCustomFile">{{ form.sts.label }}</label>
+                    {% if urls_to_files.sts %}<a href="{{ urls_to_files.sts }}" target="_blank">открыть</a>{% endif %}
                 </div>
                 <div class="custom-file">
                     <div class="invalid-feedback">{{ form.pts.errors }}</div>
                     {{ form.pts|addclass:'custom-file-input' }}
-                    <label class="custom-file-label" for="validatedCustomFile">{{ form.pts.label }}</label>
-                    {% if urls_to_files %}<a href="{{ urls_to_files.pts }}" target="_blank">открыть</a>{% endif %}
+                    <label class="custom-file-label{% if not urls_to_files.pts %} red{% endif %}" for="validatedCustomFile">{{ form.pts.label }}</label>
+                    {% if urls_to_files.pts %}<a href="{{ urls_to_files.pts }}" target="_blank">открыть</a>{% endif %}
                 </div>
                 <div class="custom-file">
                     <div class="invalid-feedback">{{ form.dk.errors }}</div>
                     {{ form.dk|addclass:'custom-file-input' }}
-                    <label class="custom-file-label" for="validatedCustomFile">{{ form.dk.label }}</label>
-                    {% if urls_to_files %}<a href="{{ urls_to_files.dk }}" target="_blank">открыть</a>{% endif %}
+                    <label class="custom-file-label{% if not urls_to_files.dk %} red{% endif %}" for="validatedCustomFile">{{ form.dk.label }}</label>
+                    {% if urls_to_files.dk %}<a href="{{ urls_to_files.dk }}" target="_blank">открыть</a>{% endif %}
                 </div>
                 <div class="custom-file">
                     <div class="invalid-feedback">{{ form.vu.errors }}</div>
                     {{ form.vu|addclass:'custom-file-input' }}
-                    <label class="custom-file-label" for="validatedCustomFile">{{ form.vu.label }}</label>
-                    {% if urls_to_files %}<a href="{{ urls_to_files.vu }}" target="_blank">открыть</a>{% endif %}
+                    <label class="custom-file-label{% if not urls_to_files.vu %} red{% endif %}" for="validatedCustomFile">{{ form.vu.label }}</label>
+                    {% if urls_to_files.vu %}<a href="{{ urls_to_files.vu }}" target="_blank">открыть</a>{% endif %}
                 </div>
                 <div class="custom-file">
                     <div class="invalid-feedback">{{ form.owner_passport.errors }}</div>
@@ -111,7 +111,8 @@
                 {{ form.comment_from_user|addclass:'form-control' }}
             </div>
         </div>
-        <button type="submit" class="btn btn-outline-success">Отправить</button>
+        <button type="submit" class="btn btn-outline-success">Сохранить</button>
+        <p class="comment-p">Вы можете дополнить заявку позже.</p>
     </form>
     <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"
             integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n"
@@ -124,11 +125,14 @@
             crossorigin="anonymous"></script>
 
     <script type="text/javascript">
+    var a = 0
         $('.custom-file input').change(function (e) {
             var files = [];
             for (var i = 0; i < $(this)[0].files.length; i++) {
                 let filename = $(this)[0].files[i].name
-                $(this).parent().children('a')[0].innerHTML = ''
+                let label = $(this).parent()[0].getElementsByTagName('label').item(0)
+                label.innerText = ''
+                label.className = label.className.replace(' red', '')
                 if (filename.length > 20) {
                     filename = filename.slice(0, 15) + '...'
                 }
