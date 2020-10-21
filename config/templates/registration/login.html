@@ -15,10 +15,9 @@
     {% if next %}
         <div class="alert alert-danger" role="alert">
         {% if user.is_authenticated %}
-            <p>Your account doesn't have access to this page. To proceed,
-                please login with an account that has access.</p>
+            <p>У вашей учетной записи нет доступа к этой странице. Чтобы продолжить, войдите в систему с учетной записью, имеющей доступ</p>
         {% else %}
-                <p>Please login to see this page.</p>
+                <p>Пожалуйста, войдите, чтобы увидеть эту страницу.</p>
         {% endif %}
             </div>
     {% endif %}

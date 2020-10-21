@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 from uuid import uuid4
 from collections import namedtuple
+from smtplib import SMTPAuthenticationError
 
 from django.core.handlers.wsgi import WSGIRequest
 from django.core.mail import send_mail as django_send_mail
@@ -14,11 +15,14 @@ def send_mail(subject='Сообщение от agro-meridian', message='', to=li
         to = [to]
 
     message += '\n\nСпасибо за использование сервиса получения пропусков - http://agro-meridian.com!'
-    django_send_mail(
-        message=message,
-        subject=subject,
-        from_email=settings.EMAIL_HOST_USER,
-        recipient_list=to)
+    try:
+        django_send_mail(
+            message=message,
+            subject=subject,
+            from_email=settings.EMAIL_HOST_USER,
+            recipient_list=to)
+    except SMTPAuthenticationError:
+        logger.error(f'SMTPAuthenticationError: \nsubject: {subject}\nmessage: {message}\nto: {to}')
 
 
 def get_unique_filename(instance=None, filename=''):
@@ -48,6 +52,7 @@ def get_disk_usage(path):
     Returned valus is a named tuple with attributes 'total', 'used' and
     'free', which are the amount of total, used and free space, in bytes.
     """
+
     def get_size(start_path=path):
         total_size = 0
         for dirpath, dirnames, filenames in os.walk(start_path):

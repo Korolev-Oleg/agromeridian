@@ -2,10 +2,10 @@
 {% extends 'templates/base_generic.html' %}
 {% load static %}
 {% block extra_styles %}
-    <link rel="stylesheet" href="{% static 'css/form.css' %}">
+    <link rel="stylesheet" href="{% static 'css/form.css' %}?1">
 {% endblock %}
 
 {% block content %}
-    <p>Logged out!</p>
-    <a href="{% url 'login' %}">Click here to login again</a>
+    <p>Вы вышли!</p>
+    <a href="{% url 'login' %}">Войти снова!</a>
 {% endblock %}

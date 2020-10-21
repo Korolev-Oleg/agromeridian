@@ -76,4 +76,3 @@ def register_new_user(username, email, password):
         return True
     else:
         raise Exception(f'ПОЛЬЗОВАТЕЛЬ: {username} is exist')
-
