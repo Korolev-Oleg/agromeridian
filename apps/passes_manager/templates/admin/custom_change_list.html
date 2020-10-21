@@ -7,7 +7,7 @@
     {% endif %}
 
     <div class="disk {% if disk_size_warning %}warning{% endif %}" >
-        <p>Свободно: {{ disk_free }}GB / {{ disk_total }}GB</p>
+        <p>Занято: {{ disk_used }}GB / {{ disk_total }}GB</p>
     </div>
     <style type="text/css">
         .disk {

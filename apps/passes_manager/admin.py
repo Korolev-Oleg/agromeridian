@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from .models import Applications
 from .models import Clients
 from config.settings import EXTERNAL_TOKEN_VALIDATION_URL
-from config.settings import MEDIA_ROOT
+from config.settings import BASE_DIR
 
 from core.utils import get_disk_usage
 
@@ -52,10 +52,10 @@ class ApplicationsAdmin(admin.ModelAdmin):
 
     def changelist_view(self, request, extra_context=None):
         extra_context = extra_context or {}
-        disk = get_disk_usage(MEDIA_ROOT)
-        extra_context['disk_free'] = str(disk.free)[:5]
+        disk = get_disk_usage(BASE_DIR)
+        extra_context['disk_used'] = str(disk.used)[:4]
         extra_context['disk_total'] = str(disk.total)[:5]
-        if disk.free < 2:
+        if (disk.total - disk.used) < 2:
             extra_context['disk_size_warning'] = True
         return super(ApplicationsAdmin, self).changelist_view(request, extra_context=extra_context)
 
