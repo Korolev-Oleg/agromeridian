@@ -1,3 +1,22 @@
 {#<a href="https://webdevblog.ru/kak-dobavit-polzovatelskie-knopki-v-django-admin/">how to set buttons</a>#}
 {% extends 'admin/change_list.html' %}
-{% block content_title %}{% if title %}<h1>Выберите заявку для изменения</h1>{% endif %}{% endblock %}
+{% block content_title %}
+    {% if title %}<h1>Выберите заявку для изменения</h1>{% endif %}
+    {% if disk_size_warning %}
+        <p class="warning">Заканчивается место на диске!</p>
+    {% endif %}
+
+    <div class="disk {% if disk_size_warning %}warning{% endif %}" >
+        <p>Свободно: {{ disk_free }}GB / {{ disk_total }}GB</p>
+    </div>
+    <style type="text/css">
+        .disk {
+            float: left;
+            display: flex;
+        }
+        .warning {
+            color: darkred;
+            font-weight: bold;
+        }
+    </style>
+{% endblock %}

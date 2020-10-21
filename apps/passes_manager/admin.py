@@ -4,6 +4,9 @@ from django.contrib.auth.models import User
 from .models import Applications
 from .models import Clients
 from config.settings import EXTERNAL_TOKEN_VALIDATION_URL
+from config.settings import MEDIA_ROOT
+
+from core.utils import get_disk_usage
 
 
 @admin.register(Applications)
@@ -11,7 +14,7 @@ class ApplicationsAdmin(admin.ModelAdmin):
     change_list_template = 'admin/custom_change_list.html'
     change_form_template = 'admin/custom_change_form.html'
     search_fields = ('owner', 'car_number')
-    list_display = ('owner', 'car_number', 'zone', 'is_complete', 'is_passed', )
+    list_display = ('owner', 'car_number', 'zone', 'is_complete', 'is_passed',)
     list_filter = ('is_passed', 'zone', 'client', 'date_get_year')
 
     fieldsets = (
@@ -46,6 +49,15 @@ class ApplicationsAdmin(admin.ModelAdmin):
             )
         }),
     )
+
+    def changelist_view(self, request, extra_context=None):
+        extra_context = extra_context or {}
+        disk = get_disk_usage(MEDIA_ROOT)
+        extra_context['disk_free'] = str(disk.free)[:5]
+        extra_context['disk_total'] = str(disk.total)[:5]
+        if disk.free < 2:
+            extra_context['disk_size_warning'] = True
+        return super(ApplicationsAdmin, self).changelist_view(request, extra_context=extra_context)
 
 
 class UserInline(admin.TabularInline):

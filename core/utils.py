@@ -1,5 +1,7 @@
+import os
 from pathlib import Path
 from uuid import uuid4
+from collections import namedtuple
 
 from django.core.handlers.wsgi import WSGIRequest
 from django.core.mail import send_mail as django_send_mail
@@ -38,3 +40,19 @@ def logging_base_view(view):
             return view()
         except Exception as error_message:
             settings.logger.error(error_message)
+
+
+def get_disk_usage(path):
+    """Return disk usage statistics about the given path.
+
+    Returned valus is a named tuple with attributes 'total', 'used' and
+    'free', which are the amount of total, used and free space, in bytes.
+    """
+    _ntuple_diskusage = namedtuple('usage', 'total used free')
+    st = os.statvfs(path)
+
+    free = (st.f_bavail * st.f_frsize) / 1e+9
+    total = (st.f_blocks * st.f_frsize) / 1e+9
+    used = (st.f_blocks - st.f_bfree) * st.f_frsize / 1e+9
+
+    return _ntuple_diskusage(total, used, free)

@@ -32,7 +32,7 @@ logger.add(
 )
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 # Redirect after login in /admin
 ADMIN_LOGIN_REDIRECT_URL = '/admin/passes_manager/applications/'
