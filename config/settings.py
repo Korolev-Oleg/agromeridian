@@ -18,6 +18,9 @@ from loguru import logger
 
 from SECRET import *
 
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = False
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -30,9 +33,6 @@ logger.add(
     retention="1 month",
     compression='zip',
 )
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
 
 # Redirect after login in /admin
 ADMIN_LOGIN_REDIRECT_URL = '/admin/passes_manager/applications/'
@@ -131,3 +131,6 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 print(STATIC_ROOT)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+# max file size
+MAX_UPLOAD_SIZE = "524288"

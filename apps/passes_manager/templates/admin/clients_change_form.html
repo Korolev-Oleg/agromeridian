@@ -2,12 +2,30 @@
 
 {% load static %}
 {% block extrastyle %}{{ block.super }}
-    <link rel="stylesheet" type="text/css" href="{% static "admin/css/forms.css" %}">
-{#    <link rel="stylesheet" href="{% %}">#}
+    <link rel="stylesheet" type="text/css" href="{% static "admin/css/forms.css" %}?1">
 {% endblock %}
 {% block submit_buttons_bottom %}
     {{ block.super }}
     <script>
+    function copy_to_clip(text){
+        console.log('navigator.clipboard');
+        var textArea = document.createElement("textarea");
+        textArea.value = text;
+        textArea.style.position="fixed";  //avoid scrolling to bottom
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+
+        try {
+            var successful = document.execCommand('copy');
+            var msg = successful ? 'successful' : 'unsuccessful';
+        } catch (err) {
+            console.log(err)
+        }
+
+        document.body.removeChild(textArea)
+    }
+
         window.onload = function () {
             let id_token = document.getElementById('id_token');
             let email = document.getElementById('id_email').value
@@ -21,11 +39,7 @@
                 email = document.getElementById('id_email').value
                 url = `{{ token_validation_url }}?token=${id_token.value}&email=${email}`
 
-                navigator.clipboard.writeText(url)
-                    .then(() => {
-                        console.log(id_token)
-                        id_token.parentNode.lastChild
-                    })
+                copy_to_clip(url)
             }
             id_token.parentNode.appendChild(copy_button)
             id_token.parentNode.style.display = 'flex'

@@ -3,7 +3,7 @@
 {% load myfilters %}
 
 {% block extra_styles %}
-    <link rel="stylesheet" href="{% static 'css/passes.css' %}">
+    <link rel="stylesheet" href="{% static 'css/passes.css' %}?1">
 {% endblock %}
 {% block content %}
     <h1>{% if is_new %}Новая заявка{% else %}Редактирование заявки{% endif %}</h1>
