@@ -32,7 +32,7 @@ class ApplicationsAdmin(admin.ModelAdmin):
                 'date_push_year',
                 'date_get_year',
                 'comment_admin',
-                'is_passed',
+                ('is_passed', 'notify_client',),
 
             )
         }),

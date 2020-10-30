@@ -136,6 +136,7 @@ def renew_passes_form(request, pk=False):
     admin_comment = ''
     urls_to_files = ''
     if request.method == 'POST':
+        # Валидация данных формы
         form = PassesForm(request.POST, request.FILES)
         if form.is_valid():
             pk_new = save_passes_form(db, form, request.user.pk)

@@ -6,7 +6,7 @@ from config import settings
 from config.settings import EXTERNAL_TOKEN_VALIDATION_URL
 from django.urls import reverse  # Used to generate URLs by reversing the URL patterns
 
-from core.utils import send_mail, get_unique_filename
+from core.utils import send_mail, get_unique_filename, send_notification_for_client
 
 
 class Applications(models.Model):
@@ -32,6 +32,7 @@ class Applications(models.Model):
     date_get_year = models.DateField(verbose_name='Дата выдачи годового', blank=True, null=True)
     comment_admin = models.TextField(verbose_name='Комментарий', blank=True, null=True)
     is_passed = models.BooleanField(default=False, verbose_name='Пропуск выдан')
+    notify_client = models.BooleanField(default=False, verbose_name='Уведомить клиента')
 
     # Зявка пользователя
     sts = models.FileField(upload_to=get_unique_filename, verbose_name='СТС', blank=True, null=True)
@@ -60,6 +61,7 @@ class Applications(models.Model):
     def is_complete(self):
         if self.sts and self.pts and self.dk and self.vu:
             return True
+
     is_complete.boolean = True
     is_complete.short_description = 'Заполнено'
 
@@ -80,6 +82,15 @@ class Applications(models.Model):
         """
         return reverse('passes-renew', args=[str(self.id)])
 
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        if self.notify_client:
+
+            # Уведомление для клиента
+            send_notification_for_client(self)
+            self.notify_client = False
+
+        super(Applications, self).save()
+
     class Meta:
         verbose_name = 'Заявка'
         verbose_name_plural = 'Заявки'
@@ -95,6 +106,7 @@ class Clients(models.Model):
     token = models.CharField(max_length=36, verbose_name='Токен', default=uuid4)
     email = models.EmailField(blank=True, null=True, verbose_name='Почта', unique=True,
                               help_text='После сохранения, на эту почту будет отправлена ссылка для регистрации')
+
     created = models.DateTimeField(auto_now_add=True, db_index=True, verbose_name='Создано')
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, editable=False)
     name = models.CharField(max_length=130, blank=True, null=True, verbose_name='Наименование')

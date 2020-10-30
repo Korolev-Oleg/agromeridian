@@ -1,9 +1,8 @@
-from django.contrib.auth.models import User
 from django.core.handlers.wsgi import WSGIRequest
-from django.http.response import HttpResponseRedirect
-from django.urls import reverse
 
 from apps.passes_manager.models import Clients, Applications
+from core.utils import new_passes_notification_to_admin_email
+from core.utils import get_full_url
 
 
 def HARD_SAVE_FORM(request: WSGIRequest, model):
@@ -94,7 +93,15 @@ def save_passes_form(model, form, user_pk):
         model.comment_from_user = form.cleaned_data['comment_from_user']
     if form.cleaned_data['additional_file']:
         model.additional_file = form.cleaned_data['additional_file']
+
     model.save()
+
+    new_passes_notification_to_admin_email(
+        model.client.name, model.owner,
+        car_number=model.car_number,
+        comment=model.comment_from_user,
+        url=f"admin/passes_manager/applications/{model.pk}"
+    )
 
 
 def get_passes_initial(model) -> dict:
