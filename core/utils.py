@@ -9,12 +9,24 @@ from django.core.mail import send_mail as django_send_mail
 from config import settings
 from loguru import logger
 from pathlib import Path
+from telegram_notifier import TelegramNotifier
 
 
+@logger.catch()
+def send_telegram_notify(subject: str, message: str):
+    """ Уведомления для админа в телеграм """
+    msg = f"<b>{subject}</b>\n"
+    msg += message
+    notifier = TelegramNotifier(settings.TELEGRAM_API_KEY, parse_mode='HTML')
+    notifier.send(msg)
+
+
+@logger.catch()
 def get_full_url(url):
     return f"{settings.FULL_EXTERNAL_HOST.removesuffix('/')}/{url.removeprefix('/')}"
 
 
+@logger.catch()
 def send_mail(subject='Сообщение от agro-meridian', message='', to=list) -> None:
     if not isinstance(to, list):
         to = [to]
@@ -31,6 +43,7 @@ def send_mail(subject='Сообщение от agro-meridian', message='', to=li
         logger.error(f'SMTPAuthenticationError: \nsubject: {subject}\nmessage: {message}\nto: {to}')
 
 
+@logger.catch()
 def new_passes_notification_to_admin_email(client: str, owner: str, comment: str, car_number: str, url: str):
     """
     Оповещает админа о новой заявке
@@ -39,9 +52,12 @@ def new_passes_notification_to_admin_email(client: str, owner: str, comment: str
     message += f'Номер машины: {car_number}\n'
     message += f'Комментарий: {comment}\n'
     message += f'Просмотр: {get_full_url(url)}\n'
-    send_mail(subject=f'Новая заявка от {client}', message=message, to=settings.ADMIN_EMAIL)
+    subject = f'Заявка от {client}'
+    send_mail(subject=subject, message=message, to=settings.ADMIN_EMAIL)
+    send_telegram_notify(subject=subject, message=message)
 
 
+@logger.catch()
 def send_notification_for_client(application):
     """
     Оповещает клиента о комментарии от админа к заявке
@@ -65,6 +81,7 @@ def send_notification_for_client(application):
         to=application.client.email)
 
 
+@logger.catch()
 def get_unique_filename(instance=None, filename=''):
     """
     Именует медиа файлы <uuid + filename.suffix>
@@ -72,12 +89,14 @@ def get_unique_filename(instance=None, filename=''):
     return f'{uuid4()}{Path(filename).suffix}'
 
 
+@logger.catch()
 def handle_uploaded_file(f):
     with open(settings.MEDIA_ROOT / 'file.txt', 'w') as destination:
         for chunk in f.chunks():
             destination.write(chunk)
 
 
+@logger.catch()
 def logging_base_view(view):
     def decorator():
         try:
@@ -86,10 +105,11 @@ def logging_base_view(view):
             settings.logger.error(error_message)
 
 
+@logger.catch()
 def get_disk_usage(path):
     """Return disk usage statistics about the given path.
 
-    Returned valus is a named tuple with attributes 'total', 'used' and
+    Returned values is a named tuple with attributes 'total', 'used' and
     'free', which are the amount of total, used and free space, in bytes.
     """
 
@@ -111,3 +131,4 @@ def get_disk_usage(path):
     used = get_size() / 1e+9
 
     return _ntuple_diskusage(total, used, free)
+

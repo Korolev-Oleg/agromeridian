@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.utils import IntegrityError
 from django.shortcuts import render, get_object_or_404
@@ -16,7 +18,7 @@ from .models import Clients
 from .models import Applications
 from .forms import RegistrationForm
 from .forms import PassesForm
-from config.settings import EMAIL_HOST_USER
+from config.settings import ADMIN_EMAIL
 
 from .buisnes_logic import auth
 
@@ -35,7 +37,8 @@ def validate_registration_token(request):
             # если зарегистрирован
             return auth.go_login(request)
 
-    return HttpResponse(f'Неверный ключ доступа, обратитесь к администратору!\n{EMAIL_HOST_USER}')
+    auth.notify_success_denied(email)
+    return HttpResponse(f'Неверный ключ доступа, обратитесь к администратору!\n{ADMIN_EMAIL}')
 
 
 @settings.logger.catch
@@ -94,7 +97,6 @@ class UserPassesView(LoginRequiredMixin, generic.ListView):
     Представление всех заявок пользователя
     """
     model = Applications
-    # paginate_by = 5
     template_name = 'passes_manager/user_passes.html'
     context = {
         'test': 1111
@@ -113,10 +115,6 @@ class UserPassesView(LoginRequiredMixin, generic.ListView):
             using=self.template_engine,
             **response_kwargs
         )
-
-
-def test(request, pk=1):
-    return HttpResponse('success')
 
 
 @settings.logger.catch
@@ -171,3 +169,17 @@ def renew_passes_form(request, pk=False):
                    'admin_comment': admin_comment,
                    'urls_to_files': urls_to_files,
                    'is_new': is_new_form})
+
+
+def get_zip(request, pk):
+    _zip = get_object_or_404(Applications, pk=pk).get_zip()
+    response = HttpResponse(
+        _zip.bytes,
+        content_type="application/zip"
+    )
+    response.setdefault(
+        'Content-Disposition',
+        'inline; filename="{filename}"'.format(
+            filename=_zip.name))
+
+    return response

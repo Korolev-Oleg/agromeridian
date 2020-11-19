@@ -1,12 +1,22 @@
+import os
+import zipfile
+from collections import namedtuple
+from pathlib import Path
+from typing import Tuple
 from uuid import uuid4
 
 from django.db import models
 from django.contrib.auth.models import User
+from django.http import Http404
+from slugify import slugify
+
 from config import settings
 from config.settings import EXTERNAL_TOKEN_VALIDATION_URL
 from django.urls import reverse  # Used to generate URLs by reversing the URL patterns
 
 from core.utils import send_mail, get_unique_filename, send_notification_for_client
+from core import utils
+from config.settings import logger
 
 
 class Applications(models.Model):
@@ -82,9 +92,88 @@ class Applications(models.Model):
         """
         return reverse('passes-renew', args=[str(self.id)])
 
+    @logger.catch()
+    def __get_documents(self) -> list:
+
+        def get_named_tuple(obj):
+            """ Генерирует именнованный кортеж
+                return: (name:str, path:str)
+            """
+            _tuple = namedtuple(
+                typename=f'f_{uuid4().__str__()[:5]}',
+                field_names=['name', 'path'])
+
+            name = "{filename}{suffix}".format(
+                filename=obj.field.name,
+                suffix=Path(obj.name).suffix,
+            )
+            logger.debug(name)
+            return _tuple(name=name, path=obj.path)
+
+        documents = []
+        if self.sts:
+            documents.append(get_named_tuple(self.sts))
+        if self.pts:
+            documents.append(get_named_tuple(self.pts))
+        if self.dk:
+            documents.append(get_named_tuple(self.dk))
+        if self.vu:
+            documents.append(get_named_tuple(self.vu))
+        if self.owner_passport:
+            documents.append(get_named_tuple(self.owner_passport))
+        if self.lsnnl:
+            documents.append(get_named_tuple(self.lsnnl))
+        if self.requisites:
+            documents.append(get_named_tuple(self.requisites))
+        if self.additional_file:
+            documents.append(get_named_tuple(self.additional_file))
+
+        logger.debug(documents)
+
+        return documents
+
+    def get_zip_url(self):
+        return reverse('get-zip', args=[str(self.id)])
+
+    def get_zip(self) -> namedtuple:
+        zip_path = self.__make_zip()
+        if zip_path.exists():
+            with open(zip_path, 'rb') as _zip:
+                return namedtuple(
+                    'name', ['name', 'bytes'])(
+                    name=zip_path.name,
+                    bytes=_zip.read()
+                )
+
+        raise Http404
+
+    @logger.catch()
+    def __make_zip(self):
+        """ Создает архив из файлов заявки
+            return: Path - absolute system path to zip file
+        """
+        zip_dir = settings.MEDIA_ROOT / 'zip'
+        if zip_dir.exists():
+            os.system(f'rm -rf {zip_dir}')
+            os.system(f'mkdir {zip_dir}')
+        else:
+            os.system(f'mkdir {zip_dir}')
+
+        zip_name = '{name}_{car}_{zone}.zip'.format(
+            name=slugify(self.owner),
+            car=slugify(self.car_number),
+            zone=slugify(self.get_zone()),
+        )
+
+        zip_path = zip_dir / zip_name
+        with zipfile.ZipFile(zip_path, 'w') as _zip:
+            for document in self.__get_documents():
+                _zip.write(document.path, document.name)
+
+        return zip_path
+
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         if self.notify_client:
-
             # Уведомление для клиента
             send_notification_for_client(self)
             self.notify_client = False

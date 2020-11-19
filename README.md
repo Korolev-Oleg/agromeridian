@@ -10,18 +10,7 @@ Install requirements
 ```shell script
 pip install requirements.txt
 ```
-
-Migrate models to database
-```shell script
-python manage.py migrate
-```
-
-Collect static files
-```shell script
-python manage.py collectstatic
-```
-
-Make and setup SECRET.py
+Make and setup ./SECRET.py
 ``` python
 # SECURITY WARNING: keep this file secret!
 SECRET_KEY = ''
@@ -37,6 +26,17 @@ ALLOWED_HOSTS = [
     'localhost'
 ]
 ```
+
+Migrate models to database
+```shell script
+python manage.py migrate
+```
+
+Collect static files
+```shell script
+python manage.py collectstatic
+```
+
 
 Run gunicorn in .
 ```shell script

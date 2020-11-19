@@ -59,6 +59,19 @@ class ApplicationsAdmin(admin.ModelAdmin):
             extra_context['disk_size_warning'] = True
         return super(ApplicationsAdmin, self).changelist_view(request, extra_context=extra_context)
 
+    def changeform_view(self, request, object_id=None, form_url='', extra_context=None):
+        extra_context = {}
+        extra_context.setdefault(
+            'get_zip_url',
+            Applications.objects.get(pk=object_id).get_zip_url())
+
+        return super(
+            ApplicationsAdmin, self).changeform_view(
+            request, object_id=object_id,
+            form_url=form_url,
+            extra_context=extra_context
+        )
+
 
 class UserInline(admin.TabularInline):
     model = User

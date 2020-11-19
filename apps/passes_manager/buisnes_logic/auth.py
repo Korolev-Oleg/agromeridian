@@ -5,6 +5,7 @@ from django.urls import reverse
 from apps.passes_manager.models import Clients
 from config import settings
 from core.utils import send_mail
+from core.utils import send_telegram_notify
 
 
 def go_login(request):
@@ -22,6 +23,12 @@ def go_register(request):
 def go_cabinet():
     print(reverse('cabinet'))
     return HttpResponseRedirect(reverse('cabinet'))
+
+
+def notify_success_denied(email):
+    send_telegram_notify(
+        'Попытка регистрации по несуществующему токену!',
+        message=f'введенный email: {email}')
 
 
 def is_user_exist(username, email):
@@ -67,12 +74,18 @@ def sent_register_detail(form):
 def register_new_user(username, email, password):
     """ Сохраняет нового пользователя в модель User """
     if not is_user_exist(username, email):
+
         user = User.objects.create()
         user.username = email
         user.email = email
         user.first_name = username
         user.set_password(password)
         user.save()
+        send_telegram_notify(subject='Зарегистрирован новый пользователь',
+                             message=f"{username}\n{email}")
         return True
     else:
+        send_telegram_notify(subject='Неудачная попытка регистрации пользователя!',
+                             message=f"{username}\n{email}")
+
         raise Exception(f'ПОЛЬЗОВАТЕЛЬ: {username} is exist')

@@ -21,3 +21,8 @@ urlpatterns += [
     url('^cabinet/passes/new/$', views.renew_passes_form, name='passes-new'),
     url(r'^cabinet/passes/(?P<pk>\d+)/renew/$', views.renew_passes_form, name='passes-renew'),
 ]
+
+# Zip
+urlpatterns += [
+    url(r'^getzip/(?P<pk>\d+)$', views.get_zip, name='get-zip')
+]

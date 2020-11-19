@@ -13,13 +13,25 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 import os
 from pathlib import Path
 
-# SECURITY WARNING: keep SECRET.py file secret!
 from loguru import logger
 
-from SECRET import *
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+# SECURITY WARNING: keep SECRET.py file secret!
+from SECRET import (
+    DEBUG,
+    SECRET_KEY,
+    EMAIL_HOST,
+    EMAIL_PORT,
+    EMAIL_HOST_USER,
+    EMAIL_HOST_PASSWORD,
+    EMAIL_USE_SSL,
+    ADMIN_EMAIL,
+    TELEGRAM_API_KEY,
+    EXTERNAL_HOST,
+    EXTERNAL_TOKEN_VALIDATION_URL,
+    EXTERNAL_LOGIN_URL,
+    FULL_EXTERNAL_HOST,
+    ALLOWED_HOSTS,
+)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -128,7 +140,6 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-print(STATIC_ROOT)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 

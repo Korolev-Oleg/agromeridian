@@ -1,4 +1,22 @@
 {% extends 'admin/change_form.html' %}
+{% load i18n admin_urls static admin_modify %}
+{% block object-tools %}
+    <style type="text/css">
+        @media (max-width: 767px) {
+            .object-tools li + li {
+                margin-left: 0!important;
+            }
+        }
+    </style>
+    {% if change %}{% if not is_popup %}
+        <ul class="object-tools">
+            {% block object-tools-items %}
+                <li><a href="{{ get_zip_url }}" target="_blank" class="historylink">Загрузить архив</a></li>
+                {% change_form_object_tools %}
+            {% endblock %}
+        </ul>
+    {% endif %}{% endif %}
+{% endblock %}
 {% block submit_buttons_bottom %}
     {{ block.super }}
     <script>
